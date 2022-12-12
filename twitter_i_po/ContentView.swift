@@ -9,24 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State var tweets : [TweetModel] = [ //state- svaki put kad se promjeni varijabla, promjeni view
-         TweetModel (
-             content: "Tweet 1",
-             username: "username",
-             date: Date(),
-             image: "crow",
-             isFavorite: true),
-         TweetModel (
-             content: "Tweet 2",
-             username: "username",
-             date: Date(),
-             image: "crow",
-             isFavorite: false
-        )
-        
-    ]
-    
-    @State var username = ""
+    @EnvironmentObject var tweetData: TweetData
+    @EnvironmentObject var userData: UserData
+
     
     @State var content: String = ""
     @State var isLoginViewPresented = false
@@ -37,7 +22,7 @@ struct ContentView: View {
             
             
             HStack{
-                Text(username.isEmpty ? "Tweet" : username)
+                Text(userData.username.isEmpty ? "Tweet" : userData.username)
                     .bold()
                     .font(.title)
                 Spacer()
@@ -46,7 +31,7 @@ struct ContentView: View {
                 }
             }
             
-            List($tweets){ tweet in //kada je @state pišemo dolar
+            List($tweetData.tweets){ tweet in //kada je @state pišemo dolar
                 Tweet(tweet: tweet)
             }
             .listStyle(.plain)
@@ -56,12 +41,11 @@ struct ContentView: View {
                 TextField("Content", text: $content)
                 
                 Button(action: {
-                    tweets.append(TweetModel(
+                    tweetData.tweets.append(TweetModel(
                         content: content,
                         username: "karla",
                         date: Date(),
-                        image: "crow",
-                        isFavorite: true))
+                        image: "crow"))
                     content = ""
                 })
                 {
@@ -76,7 +60,7 @@ struct ContentView: View {
         .padding()
         .sheet(isPresented: $isLoginViewPresented) {
             LoginView(
-                username: $username,
+                username: $userData.username,
                 isPresented: $isLoginViewPresented)
         }
     }
@@ -156,6 +140,8 @@ func Test(){
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(TweetData())
+            .environmentObject(UserData())
     }
 }
 

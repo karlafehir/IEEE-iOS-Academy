@@ -35,9 +35,6 @@ struct LoginView: View {
             {
                 Text("Log in")
             }
-        
-            
-        
         }
     }
 }
